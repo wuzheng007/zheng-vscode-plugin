@@ -1,7 +1,7 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+// 这是一个launch配置，用于编译扩展，并在新的VS Code窗口中打开它以进行测试或调试。  
+// 使用IntelliSense来了解可能的属性。IntelliSense是VS Code的一个功能，它可以提供代码补全、参数信息、快速信息和成员列表等智能感知功能，帮助您编写代码。   
+// 将鼠标悬停在现有属性上可查看其描述。VS Code会在您将鼠标悬停在代码上的某些元素（如JSON属性名）时显示有关该元素的更多信息。  
+// 有关更多信息，请访问：https://go.microsoft.com/fwlink/?linkid=830387。
 {
 	"version": "0.2.0",
 	"configurations": [
