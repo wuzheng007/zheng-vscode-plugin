@@ -14,10 +14,50 @@
   "contributes": {
     "commands": [
       {
-        "command": "zheng-vscode-plugin.helloWorld",
+        "command": "zheng.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "zheng.getCurrentFilePath",
+        "title": "获取当前文件（夹）路径"
+      },
+      {
+        "command": "zheng.testMenuShow",
+        "title": "这个菜单仅在js文件中显示",
+        "icon": {
+          "dark": "./images/tool-light.svg",
+          "light": "./images/tool-dark.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorFocus",
+          "command": "zheng.getCurrentFilePath",
+          "group": "navigation@1"
+        },
+        {
+          "when": "resourceLangId === javascript",
+          "command": "zheng.testMenuShow",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "resourceLangId === javascript",
+          "command": "zheng.testMenuShow",
+          "group": "navigation@1"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceLangId === javascript",
+          "command": "zheng.testMenuShow",
+          "group": "navigation@1"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
