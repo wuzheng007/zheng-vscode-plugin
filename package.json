@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -54,7 +56,8 @@
         {
           "when": "resourceLangId === javascript",
           "command": "zheng.testMenuShow",
-          "group": "navigation@1"
+          "group": "navigation@1",
+          "alt": "zheng.helloWorld"
         }
       ]
     }
