@@ -60,6 +60,16 @@
           "alt": "zheng.helloWorld"
         }
       ]
+    },
+    "configuration": {
+      "title": "zheng-vscode-plugin",
+      "properties": {
+        "zheng-vscode-plugin.disableFeatureWord": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否禁用特性词"
+        }
+      }
     }
   },
   "scripts": {

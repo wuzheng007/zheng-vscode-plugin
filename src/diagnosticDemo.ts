@@ -53,9 +53,9 @@ async function initDiagnostic(collection: DiagnosticCollection) {
   // const workspaceFolder = workspace.getWorkspaceFolder(window.activeTextEditor.document.uri)
 
   // 获取 当前工作区除node_modules内的全部文件
-  console.time("获取当前工作区除node_modules内的全部文件");
+  // console.time("获取当前工作区除node_modules内的全部文件");
   const files = await workspace.findFiles("**/*", "**/node_modules/**");
-  console.timeEnd("获取当前工作区除node_modules内的全部文件");
+  // console.timeEnd("获取当前工作区除node_modules内的全部文件");
   // 遍历文件
   for (const file of files) {
     workspace.openTextDocument(file)
@@ -68,12 +68,9 @@ async function initDiagnostic(collection: DiagnosticCollection) {
 /**
  * 更新文档诊断
  */
-async function refreshDocumentDiagnostic(doc: TextDocument, collection: DiagnosticCollection) {
+async function refreshDocumentDiagnostic(document: TextDocument, collection: DiagnosticCollection) {
   try {
-    // const doc = await workspace.openTextDocument(uri);
-    /* const content = await workspace.fs.readFile(uri);
-    const text = content.toString(); */
-    const docText = doc.getText();
+    const docText = document.getText();
 
     // ================方案1
     /* // 对整个文档进行匹配
@@ -91,14 +88,15 @@ async function refreshDocumentDiagnostic(doc: TextDocument, collection: Diagnost
       let match;
       while ((match = regex.exec(docText)) !== null) {
         const range = new Range(
-          doc.positionAt(match.index), // 将从零开始的偏移量转换为位置。
-          doc.positionAt(match.index + word.length)
+          document.positionAt(match.index), // 将从零开始的偏移量转换为位置。
+          document.positionAt(match.index + word.length)
         );
         diagnostics.push(new Diagnostic(range, `${word} 是一个敏感词`, DiagnosticSeverity.Warning));
+        // const result = getContentAndLineNo(document, range);
       }
     }
 
-    collection.set(doc.uri, diagnostics);
+    collection.set(document.uri, diagnostics);
   } catch (error) {
     // 如果文件打开失败，则输出错误信息
     // console.log(error);
@@ -150,4 +148,42 @@ function createLineDiagnostics(
     diagnostics.push(diagnostic);
   }
   return diagnostics;
+}
+
+
+/**
+ * 获取内容和行号，生成mergeKey要用
+ * 
+ * @param document 文档对象
+ * @param sensitiveWordRange 敏感词的范围
+ * @returns 返回一个对象，包含content和lineNo,
+ */
+function getContentAndLineNo(document: TextDocument, sensitiveWordRange: Range): { lineNo: number; content: string } {
+  const text = document.getText();
+  const line = sensitiveWordRange.start.line;
+  console.log('line', line);
+  // 将文本按行分割
+  const lines = text.split(/\r?\n/);
+  // 移除空行和制表符
+  const cleanedLines = lines.map((line) => {
+      const trimmedLine = line.trim().replace(/\t/g, '');
+      return trimmedLine ? trimmedLine : null;
+  }).filter(line => line !== null);
+
+  // 计算去除空行后的真实行号
+  let adjustedLineNo = 0;
+  for (let i = 0; i < line; i++) {
+      if (lines[i].trim().replace(/\t/g, '')) {
+          adjustedLineNo++;
+      }
+  }
+
+  // 提取敏感词前后5行的内容
+  const startExtractLine = Math.max(0, adjustedLineNo - 5);
+  const endExtractLine = Math.min(cleanedLines.length, adjustedLineNo + 1 + 5); 
+
+  return {
+      lineNo: adjustedLineNo + 1,
+      content: cleanedLines.slice(startExtractLine, endExtractLine).join('\n')
+  };
 }
